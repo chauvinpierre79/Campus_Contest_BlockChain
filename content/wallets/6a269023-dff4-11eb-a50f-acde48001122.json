@@ -1,0 +1,13 @@
+{
+    "balance": 110,
+    "history": [
+        {
+            "91426028-dff4-11eb-bc3a-acde48001122": {
+                "montant": 10,
+                "walletEmetteur": "4eb2e20a-dff4-11eb-906f-acde48001122",
+                "walletRecepteur": "6a269023-dff4-11eb-a50f-acde48001122"
+            }
+        }
+    ],
+    "unique_id": "6a269023-dff4-11eb-a50f-acde48001122"
+}
