@@ -8,28 +8,25 @@ from classes.wallet import Wallet
 
 class Block:
 
-    def __init__(self, size, baseHash, parentHash, transations):
-        self.hash = self.createHash(baseHash)
-        fileExist = os.path.exists('content/blocs/' + self.hash + '.json')
-        if not fileExist:
-            self.size = size
-            self.listTransaction = {}
-            self.base_hash = baseHash
-            self.parent_hash = parentHash
-            self.transations = transations
-            self.save()
+    def __init__(self, hash="", base_hash="", parent_hash=""):
+        self.hash = hash
+
+        if self.check_hash(base_hash):
+            if not os.path.exists('content/blocs/' + hash + '.json'):
+                self.list_transaction = {}
+                self.base_hash = base_hash
+                self.parent_hash = parent_hash
+        elif os.path.exists('content/blocs/' + hash + '.json') and base_hash == "":
+            self.load(hash)
         else:
-            self.load(self.hash)
-            self.size = size
-            self.transations = transations
+            print('Une erreur est survenue')
 
     def createHash(self, password):
-        hash = hashlib.sha256(str(password).encode())
-        hashCreate = hash.hexdigest()
-        return hashCreate
+        hash = hashlib.sha256(password.encode()).hexdigest()
+        return hash
 
-    def check_hash(self, passwordVerify):
-        if self.createHash(passwordVerify) == self.hash:
+    def check_hash(self, password_verify):
+        if self.createHash(password_verify) == self.hash:
             return True
         else:
             return False
@@ -38,28 +35,25 @@ class Block:
         WalletEmetteur = Wallet(emetteur)
         WalletRecepteur = Wallet(recepteur)
         t = uuid.uuid1()
-        self.transations = str(t)
+        transation = str(t)
         a = {
-            self.transations: {
+            transation: {
                 "walletEmetteur": emetteur,
                 "walletRecepteur": recepteur,
                 "montant": montant
             }
         }
-
         test = WalletEmetteur.send(a, montant, 'emmetteur')
-
-        print(test)
         if test == False:
             print('echec')
             return
         else:
             WalletRecepteur.send(a, montant, 'recepteur')
-            self.listTransaction.append(a)
+            self.list_transaction.update(a)
             self.save()
 
     def get_transaction(self, transaction):
-        return self.transactions[transaction]
+        return self.list_transaction[transaction]
 
     def get_weight(self):
         path = 'content/blocs/' + self.hash + '.json'
@@ -71,7 +65,7 @@ class Block:
             'name': self.hash,
             'base_hash': self.base_hash,
             'parent_hash': self.parent_hash,
-            'transactions': self.listTransaction
+            'transactions': self.list_transaction
         }
 
         pathToFile = 'content/blocs/' + self.hash + '.json'
@@ -88,4 +82,4 @@ class Block:
         self.hash = dataBlocsUnique['name']
         self.base_hash = dataBlocsUnique['base_hash']
         self.parent_hash = dataBlocsUnique['parent_hash']
-        self.listTransaction = dataBlocsUnique['transactions']
+        self.list_transaction = dataBlocsUnique['transactions']

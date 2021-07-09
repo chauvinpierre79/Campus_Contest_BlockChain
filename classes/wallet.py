@@ -5,7 +5,7 @@ import uuid
 
 class Wallet:
 
-    def __init__(self, id="", balance=100, history=[]):
+    def __init__(self, id="", balance=100, history={}):
 
         if id == "":
             self.unique_id = self.generate_unique_id()
@@ -50,7 +50,7 @@ class Wallet:
         elif role == 'recepteur':
             self.add_balance(montant)
 
-        self.history.append(transation)
+        self.history.update(transation)
         self.save()
 
     def save(self):
